@@ -4,26 +4,28 @@ public class NodeFactory {
     private int numIndepVars;
     private Binop[] currentOps;
 
-    public NodeFactory(Binop[] ops, int numVars){
+    public NodeFactory(Binop[] ops, int numVars) {
         currentOps = ops;
         numIndepVars = numVars;
     }
 
-    public Node getOperator(Random rand){
-        return new Node((Binop)currentOps[rand.nextInt(currentOps.length)].clone(), null, null);
+    // Always returns a non-null operator node
+    public Node getOperator(Random rand) {
+        Binop op = (Binop) currentOps[rand.nextInt(currentOps.length)].clone();
+        return new Node(op);
     }
 
-    public Node getTerminal(Random rand){
-        if(rand.nextBoolean()){
-            // 2 decimal places for constants
-            double val = Math.round(rand.nextDouble()*100.0)/100.0;
+    // Always returns a non-null terminal node
+    public Node getTerminal(Random rand) {
+        if(rand.nextBoolean()) {
+            double val = Math.round(rand.nextDouble() * 100.0) / 100.0;
             return new Node(new Const(val));
         } else {
-            int index = rand.nextInt(numIndepVars);
-            return new Node(new Variable(index));
+            int idx = rand.nextInt(numIndepVars);
+            return new Node(new Variable(idx));
         }
     }
 
-    public int getNumOps(){ return currentOps.length; }
-    public int getNumIndepVars(){ return numIndepVars; }
+    public int getNumOps() { return currentOps.length; }
+    public int getNumIndepVars() { return numIndepVars; }
 }
