@@ -4,10 +4,10 @@ public class Node implements Cloneable {
     Node left, right;
     Op op;
 
-    public Node(Binop op, Node left, Node right) { 
-        this.op = op; 
-        this.left = left; 
-        this.right = right; 
+    public Node(Binop op, Node left, Node right) {
+        this.op = op;
+        this.left = left;
+        this.right = right;
     }
 
     public Node(Binop op) { this(op, null, null); }
@@ -19,14 +19,19 @@ public class Node implements Cloneable {
         return 0;
     }
 
+    /**
+     * Add children recursively, safely filling in nulls and controlling depth.
+     */
     public void addRandomKids(NodeFactory nf, int maxDepth, Random rand) {
         if(maxDepth <= 0) return;
 
         if(op instanceof Binop) {
-            if(left == null) left = rand.nextBoolean() ? nf.getOperator(rand) : nf.getTerminal(rand);
-            if(right == null) right = rand.nextBoolean() ? nf.getOperator(rand) : nf.getTerminal(rand);
-            
+            if(left == null)
+                left = (rand.nextBoolean() && maxDepth > 1) ? nf.getOperator(rand) : nf.getTerminal(rand);
             left.addRandomKids(nf, maxDepth - 1, rand);
+
+            if(right == null)
+                right = (rand.nextBoolean() && maxDepth > 1) ? nf.getOperator(rand) : nf.getTerminal(rand);
             right.addRandomKids(nf, maxDepth - 1, rand);
         }
     }
@@ -34,7 +39,7 @@ public class Node implements Cloneable {
     @Override
     public Object clone() {
         Node o = null;
-        try { o = (Node) super.clone(); } 
+        try { o = (Node) super.clone(); }
         catch(CloneNotSupportedException e) { System.out.println("Node can't clone."); }
         if(o.left != null) o.left = (Node) left.clone();
         if(o.right != null) o.right = (Node) right.clone();
@@ -49,30 +54,29 @@ public class Node implements Cloneable {
         return "";
     }
 
-    // Traversal for collector
+    // Traversal for Collector
     public void traverse(Collector c) {
         c.collect(this);
         if(left != null) left.traverse(c);
         if(right != null) right.traverse(c);
     }
 
-    // Swap left child with another node's left
+    // Swap left child with another node's left child
     public void swapLeft(Node trunk) {
         Node temp = this.left;
         this.left = trunk.left;
         trunk.left = temp;
     }
 
-    // Swap right child with another node's right
+    // Swap right child with another node's right child
     public void swapRight(Node trunk) {
         Node temp = this.right;
         this.right = trunk.right;
         trunk.right = temp;
     }
 
-    // Leaf check
+    // Leaf check: Unop is leaf
     public boolean isLeaf() {
         return op instanceof Unop;
     }
 }
-
