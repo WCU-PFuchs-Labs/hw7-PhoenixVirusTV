@@ -9,13 +9,13 @@ public class NodeFactory {
         numIndepVars = numVars;
     }
 
-    // Always returns a non-null operator node
+    // Always returns a valid operator Node
     public Node getOperator(Random rand) {
         Binop op = (Binop) currentOps[rand.nextInt(currentOps.length)].clone();
         return new Node(op);
     }
 
-    // Always returns a non-null terminal node
+    // Always returns a valid terminal Node
     public Node getTerminal(Random rand) {
         if(rand.nextBoolean()) {
             double val = Math.round(rand.nextDouble() * 100.0) / 100.0;
