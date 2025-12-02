@@ -1,6 +1,9 @@
 public class Divide extends Binop {
     @Override
-    public double eval(double left, double right) { return right == 0 ? Double.POSITIVE_INFINITY : left / right; }
+    public double eval(double left, double right) {
+        if(Math.abs(right) < 0.0001) return 1.0;
+        return left / right;
+    }
     @Override
     public String toString() { return "/"; }
 }
